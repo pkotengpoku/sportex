@@ -64,105 +64,6 @@ export default function Home() {
 
         </div>
       </div>
-      <div>
-        <span>Our Featured Collection</span>
-        <div className="flex space-x-3">
-          <div>
-          <Image
-          className="dark:invert rounded-2xl"
-          src="/girl2.webp"
-          alt="Next.js logo"
-          width={350}
-          height={708}
-          priority
-        />
-        <div className="flex flex-col">
-        <span className="my-2">Timeless Tailor Trouser</span>
-        <span> 500$ <span className="line-through">700$</span></span>
-        </div>
-          </div>
-        <div>
-          <div>
-          <Image
-          className="dark:invert rounded-2xl"
-          src="/girl2.webp"
-          alt="Next.js logo"
-          width={350}
-          height={708}
-          priority
-          />
-        <div className="flex flex-col">
-        <span className="my-2">Timeless Tailor Trouser</span>
-        <span> 500$ <span className="line-through">700$</span></span>
-        </div>
-          </div>
-        </div>
-        <div>
-          <div>
-          <Image
-          className="dark:invert rounded-2xl"
-          src="/girl2.webp"
-          alt="Next.js logo"
-          width={350}
-          height={708}
-          priority
-          />
-        <div className="flex flex-col">
-        <span className="my-2">Timeless Tailor Trouser</span>
-        <span> 500$ <span className="line-through">700$</span></span>
-        </div>
-          </div>
-        </div>
-        <div>
-          <div>
-          <Image
-          className="dark:invert rounded-2xl"
-          src="/girl2.webp"
-          alt="Next.js logo"
-          width={350}
-          height={708}
-          priority
-        />
-        <div className="flex flex-col">
-        <span className="my-2">Timeless Tailor Trouser</span>
-        <span> 500$ <span className="line-through">700$</span></span>
-        </div>
-          </div>
-        </div>
-        <div>
-          <div>
-          <Image
-          className="dark:invert rounded-2xl"
-          src="/girl2.webp"
-          alt="Next.js logo"
-          width={350}
-          height={708}
-          priority
-          />
-        <div className="flex flex-col">
-        <span className="my-2">Timeless Tailor Trouser</span>
-        <span> 500$ <span className="line-through">700$</span></span>
-        </div>
-          </div>
-        </div>
-        <div>
-          <div>
-          <Image
-          className="dark:invert rounded-2xl"
-          src="/girl2.webp"
-          alt="Next.js logo"
-          width={350}
-          height={708}
-          priority
-          />
-        <div className="flex flex-col">
-        <span className="my-2">Timeless Tailor Trouser</span>
-        <span> 500$ <span className="line-through">700$</span></span>
-        </div>
-          </div>
-        </div>
-      </div>
-          </div>
           <div>
             <div className="bg-green-500  h-fit">
               <div className="flex">
@@ -211,7 +112,7 @@ export default function Home() {
       />
         </div>
         <div className="text-slate-500"> @2023 Decathlon</div>
-        <div>thereshould be a long straight line here</div>
+        <div className="w-full border-black border-t my-3 border-2"></div>
         <div>
           <ul className="flex w-full space-x-8">
             <ol>Condizioni di noleggio</ol>

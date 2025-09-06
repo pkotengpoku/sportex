@@ -14,6 +14,9 @@ import Select from '@mui/material/Select';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import { useCart } from "@/context/CartContext";
+import { DateRangePicker } from 'react-date-range';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 
 export default function ProductPage() {
   const params = useParams();
@@ -21,10 +24,44 @@ export default function ProductPage() {
 
   const { cart, addToCart } = useCart();
 
-  const [product, setProduct] = useState(null);
+
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  
+  const [state, setState] = useState([
+    {
+      startDate: today,
+      endDate: tomorrow,
+      key: 'selection'
+    }
+  ]);
+  
+
+  const [product, setProduct] = useState({});
   const [size, setSize] = useState('');
 
   const handleChange = (event) => setSize(event.target.value);
+  const handleCartChange = () => {
+    if (!size) {
+      console.log("❌ Please select a size before adding to cart");
+      return;
+    }
+  
+    console.log("✅ Adding to cart:", product);
+  
+    addToCart(
+      {
+        id: product._id, // normalize id
+        name: product.title,
+        price: product.final_price || product.initial_price,
+        image: product.image_url?.[0] || "/placeholder.jpg",
+        size: size, // 👈 also store the chosen size
+      },
+      1
+    );
+  };
+  
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -91,11 +128,37 @@ export default function ProductPage() {
           </FormControl>
           {!size && <div className="text-red-500">Please select a size</div>}
 
+          {/*Calender*/}
+          <DateRangePicker
+            ranges={state}
+            onChange={item => setState([item.selection])}
+            disabledDates={[]}
+          />
+          <div className="mt-5">
+  {state.length > 0 && (() => {
+    const formatDate = (date) => {
+      const formatted = date.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+      // capitalize first letter of each word
+      return formatted.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
+
+    const startDate = state[0].startDate;
+  const endDate = state[0].endDate;
+
+  const start = formatDate(startDate); // for display
+  const end = formatDate(endDate);     // for display
+
+  const diffInTime = endDate.getTime() - startDate.getTime();
+  const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
+
+  return `${start} – ${end} (${diffInDays} day(s))`;
+  })()}
+</div>
+
           {/* Pricing */}
           <div>
-            <div className="text-xl font-semibold">{product.pricing?.daily} € / al giorno</div>
-            <div className="line-through text-gray-400">Era {product.pricing?.oldDaily} €</div>
-            <div>Total for 5 days: {product.pricing?.daily * 5} {product.pricing?.currency}</div>
+            <div className="text-xl font-semibold">{product.final_price} € / al giorno</div>
+            <div>Total for 5 days: {product.final_price * 5} {product.currency}</div>
           </div>
 
           {/* Rental info */}
@@ -114,9 +177,13 @@ export default function ProductPage() {
               </div>
             ))}
           </div>
-        <button className="w-36 bg-green-500 p-3 rounded-lg font-bold" onClick={() => addToCart(product, 1)} >add to cart</button>
-        <div>{cart[0].title} products</div>
-        <div>Helloo</div>
+          <button
+      type="button"
+      className="w-36 bg-green-500 hover:bg-green-600 active:scale-95 transition p-3 rounded-lg font-bold text-white"
+      onClick={handleCartChange}
+    >
+      Add to Cart
+    </button>
         </div>
       </div>
     </div> 

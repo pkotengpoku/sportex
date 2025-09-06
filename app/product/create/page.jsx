@@ -145,12 +145,8 @@ export default function ProductUploadPage() {
         {/* Pricing */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block font-medium">Initial Price</label>
-            <input type="number" className="w-full p-3 border rounded-xl" placeholder="$0.00" value={initial_price} onChange={(e) => setInitial_price(Number(e.target.value))} />
-          </div>
-          <div>
-            <label className="block font-medium">Final Price</label>
-            <input type="number" className="w-full p-3 border rounded-xl" placeholder="$0.00" value={final_price} onChange={(e) => setFinal_price(Number(e.target.value))} />
+            <label className="block font-medium">Price</label>
+            <input className="w-full p-3 border rounded-xl" placeholder="$0,00" value={final_price} onChange={(e) => setFinal_price(e.target.value)} />
           </div>
         </div>
 
