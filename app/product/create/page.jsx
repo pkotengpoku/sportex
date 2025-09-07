@@ -3,9 +3,37 @@
 import { CldImage, CldUploadWidget } from 'next-cloudinary';
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header'
+import { mainCategories } from '@/data/categories';
+
+// 🔹 Fade wrapper for individual selected categories
+function FadeCategory({ category, onRemove }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 10); // trigger fade-in
+    return () => clearTimeout(t);
+  }, []);
+
+  const handleClick = () => {
+    setVisible(false); // trigger fade-out
+    setTimeout(() => onRemove(category), 300); // wait for animation before removing
+  };
+
+  return (
+    <div
+      onClick={handleClick}
+      className={`
+        m-1 p-2 rounded-2xl bg-blue-500 w-fit cursor-pointer
+        transition-opacity duration-300
+        ${visible ? "opacity-100" : "opacity-0"}
+      `}
+    >
+      {category}
+    </div>
+  );
+}
 
 export default function ProductUploadPage() {
-
   const [imageUrls, setImageUrls] = useState([]); 
   const [title, setTitle] = useState(""); 
   const [brand, setBrand] = useState(""); 
@@ -20,8 +48,7 @@ export default function ProductUploadPage() {
   const [product, setProduct] = useState({});
   const [uploading, setUploading] = useState(false);
   const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
-
-
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   const resetProductForm = () => {
     setImageUrls([]);
@@ -38,12 +65,26 @@ export default function ProductUploadPage() {
     setProduct({});
     setUploading(false);
     setIsReadyToSubmit(false);
+    setSelectedCategories([]);
   };
 
-  
+  const handleCategory = (item) => {
+    if (selectedCategories.includes(item)) {
+      // removal handled inside FadeCategory for smooth fade-out
+      removeCategory(item)
+      return;
+    } else {
+      setSelectedCategories([...selectedCategories, item]);
+    }
+  };
+
+  const removeCategory = (item) => {
+    setSelectedCategories((prev) => prev.filter((cat) => cat !== item));
+  };
+
   const handleSubmit = async () => {
     setUploading(true);
-  
+
     const productData = {
       title,
       brand,
@@ -52,23 +93,22 @@ export default function ProductUploadPage() {
       final_price,
       availability,
       categories,
-        image_url: imageUrls,
+      image_url: imageUrls,
       product_dimensions,
       date_first_available,
       discount,
     };
-  
+
     try {
       const response = await fetch('/api/product', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(productData),
       });
-  
+
       const result = await response.json();
       console.log("API Response:", result);
-  
-      // Reset the form only if submission was successful
+
       if (response.ok) {
         resetProductForm();
       } else {
@@ -80,7 +120,6 @@ export default function ProductUploadPage() {
       setUploading(false);
     }
   };
-  
 
   return (
     <div className="bg-gray-100 min-h-screen p-10">
@@ -110,7 +149,7 @@ export default function ProductUploadPage() {
         <div className="mb-6">
           <label className="block font-medium">Upload Product Images</label>
           <CldUploadWidget
-            uploadPreset="my_unsigned_preset"   // ✅ replace with your Cloudinary preset
+            uploadPreset="my_unsigned_preset"
             onSuccess={(result) => {
               setImageUrls((prev) => [...prev, result.info.secure_url]);
             }}
@@ -158,8 +197,27 @@ export default function ProductUploadPage() {
 
         {/* Categories */}
         <div className="mb-4">
-          <label className="block font-medium">Categories</label>
-          <input type="text" className="w-full p-3 border rounded-xl" placeholder="Enter categories" value={categories} onChange={(e) => setCategories(e.target.value)} />
+          <div className="mb-6 border-b flex flex-wrap">
+            {selectedCategories.map((category, index) => (
+              <FadeCategory
+                key={category}
+                category={category}
+                onRemove={removeCategory}
+              />
+            ))}
+          </div>
+
+          <div className="flex flex-wrap">
+            {mainCategories.map((category, index) => (
+              <div
+                key={index}
+                className="m-1 p-2 rounded-2xl bg-gray-300 w-fit cursor-pointer"
+                onClick={() => handleCategory(category)}
+              >
+                {category}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Product Dimensions */}
@@ -181,13 +239,21 @@ export default function ProductUploadPage() {
         </div>
 
         {/* Submit Button */}
-        <button className={`w-full text-white p-3 rounded-xl font-bold text-lg ${uploading? 'bg-lime-400':'bg-lime-600'}`} disabled={uploading} onClick={handleSubmit}>{uploading? (
-          <div className="flex items-center justify-center space-x-2">
-          <span className="h-3 w-3 rounded-full bg-lime-600 animate-bounce [animation-delay:-0.3s]"></span>
-          <span className="h-3 w-3 rounded-full bg-lime-600 animate-bounce [animation-delay:-0.15s]"></span>
-          <span className="h-3 w-3 rounded-full bg-lime-600 animate-bounce"></span>
-        </div>
-        ): (<div>Submit</div>) }</button>
+        <button
+          className={`w-full text-white p-3 rounded-xl font-bold text-lg ${uploading ? 'bg-lime-400' : 'bg-lime-600'}`}
+          disabled={uploading}
+          onClick={handleSubmit}
+        >
+          {uploading ? (
+            <div className="flex items-center justify-center space-x-2">
+              <span className="h-3 w-3 rounded-full bg-lime-600 animate-bounce [animation-delay:-0.3s]"></span>
+              <span className="h-3 w-3 rounded-full bg-lime-600 animate-bounce [animation-delay:-0.15s]"></span>
+              <span className="h-3 w-3 rounded-full bg-lime-600 animate-bounce"></span>
+            </div>
+          ) : (
+            <div>Submit</div>
+          )}
+        </button>
       </div>
     </div>
   );

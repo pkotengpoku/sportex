@@ -3,7 +3,7 @@ import React from 'react'
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { signIn, signOut, useSession } from "next-auth/react";
-
+import SubHeader from './SubHeader';
 
 const Header = () => {
 
@@ -13,7 +13,7 @@ const Header = () => {
 
   const handleSignIn = ()=>{
     if(session){
-      router.push("profile")
+      router.push("/profile")
     }else{
       signIn("google")
     }
@@ -33,32 +33,9 @@ const Header = () => {
       />
         </div>
    </div>
-        <div className="flex-col w-2/4 ">
-          <div className="flex flex-row w-full ">
-          <span className="  h-fit">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-</svg>
-
-          </span>
-          <div>
-          <input type="text" placeholder="Search ..." />
-          </div>
-          </div>
-          <div className="w-full flex mt-3">
-
-        <div className="flex ml-0 gap-x-3">
-          <div>Women</div>
-          <div>Plus</div>
-          <div>Men</div>
-          <div>Shoes</div>
-          <div>Accesories</div>
-          <div>Sale</div>
-        </div>
-        </div>
-        </div>
-        <div className="flex gap-x-4" onClick={handleSignIn}>
-          <div><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+       
+        <div className="flex gap-x-4" >
+          <div onClick={handleSignIn}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
 </svg>
 </div>
@@ -95,6 +72,7 @@ const Header = () => {
         </div>
         </div>
       </div>
+      <SubHeader />
     </div>
   )
 }

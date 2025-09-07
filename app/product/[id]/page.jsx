@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useCart } from "@/context/CartContext";
 import { DateRangePicker } from 'react-date-range';
@@ -28,7 +28,7 @@ export default function ProductPage() {
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
-  
+
   const [state, setState] = useState([
     {
       startDate: today,
@@ -36,7 +36,7 @@ export default function ProductPage() {
       key: 'selection'
     }
   ]);
-  
+
 
   const [product, setProduct] = useState({});
   const [size, setSize] = useState('');
@@ -47,9 +47,9 @@ export default function ProductPage() {
       console.log("❌ Please select a size before adding to cart");
       return;
     }
-  
+
     console.log("✅ Adding to cart:", product);
-  
+
     addToCart(
       {
         id: product._id, // normalize id
@@ -61,7 +61,7 @@ export default function ProductPage() {
       1
     );
   };
-  
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -135,25 +135,25 @@ export default function ProductPage() {
             disabledDates={[]}
           />
           <div className="mt-5">
-  {state.length > 0 && (() => {
-    const formatDate = (date) => {
-      const formatted = date.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
-      // capitalize first letter of each word
-      return formatted.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    };
+            {state.length > 0 && (() => {
+              const formatDate = (date) => {
+                const formatted = date.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+                // capitalize first letter of each word
+                return formatted.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+              };
 
-    const startDate = state[0].startDate;
-  const endDate = state[0].endDate;
+              const startDate = state[0].startDate;
+              const endDate = state[0].endDate;
 
-  const start = formatDate(startDate); // for display
-  const end = formatDate(endDate);     // for display
+              const start = formatDate(startDate); // for display
+              const end = formatDate(endDate);     // for display
 
-  const diffInTime = endDate.getTime() - startDate.getTime();
-  const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
+              const diffInTime = endDate.getTime() - startDate.getTime();
+              const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
 
-  return `${start} – ${end} (${diffInDays} day(s))`;
-  })()}
-</div>
+              return `${start} – ${end} (${diffInDays} day(s))`;
+            })()}
+          </div>
 
           {/* Pricing */}
           <div>
@@ -178,14 +178,14 @@ export default function ProductPage() {
             ))}
           </div>
           <button
-      type="button"
-      className="w-36 bg-green-500 hover:bg-green-600 active:scale-95 transition p-3 rounded-lg font-bold text-white"
-      onClick={handleCartChange}
-    >
-      Add to Cart
-    </button>
+            type="button"
+            className="w-36 bg-green-500 hover:bg-green-600 active:scale-95 transition p-3 rounded-lg font-bold text-white"
+            onClick={handleCartChange}
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
-    </div> 
+    </div>
   );
 }
