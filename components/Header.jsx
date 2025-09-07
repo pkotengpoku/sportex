@@ -21,15 +21,15 @@ const Header = () => {
 
   return (
     <div>
-       <div className="h-20 w-full  justify-between">
+       <div className="h-fit w-full justify-between ">
   <div className="flex flex-row justify-between mx-4">
    <div className="w-1/4">
-   <div className="relative h-16 w-40 hover:cursor-pointer" onClick={() => router.push("/")}> 
+   <div className="relative h-12 w-40 hover:cursor-pointer" onClick={() => router.push("/")}> 
       <Image
         src="/sportex_cropped.png"
         alt="Sportex logo"
         fill
-        className="object-contain "
+        className="object-cover"
       />
         </div>
    </div>

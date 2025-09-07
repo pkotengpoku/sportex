@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
-import { Products } from "@/data/products";
+import { mainSports } from "@/data/mainCategories";
 import Link from "next/link";
 import Header from "@/components/Header";
 import { useEffect, useState } from "react";
+import SportsSection from "@/components/SportsCard";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   
@@ -53,9 +55,9 @@ export default function Home() {
         </div>
         </div>
       </div>
-      <div>
-        <span> Shop  by Collection</span>
-        <div className="overflow-x-scroll space-x-3 flex w-full h-fit">
+      <div className="mx-8 mt-3">
+        <div className="text-3xl font-bold my-7"> Shop  by Collection</div>
+        <div className="overflow-x-scroll space-x-3 flex w-full h-fit flex-shrink-0 ">
           {products.map((product)=>(
             <Link key={product._id} href={`/product/${product._id}`}>
               <ProductCard product={product} />
@@ -64,67 +66,20 @@ export default function Home() {
 
         </div>
       </div>
-          <div>
-            <div className="bg-green-500  h-fit">
-              <div className="flex">
-                <div className="w-1/3 m-3 ">Find Us</div>
-                <div className="w-2/3 m-3 mr-9 flex justify-between">
-                  <div>
-                  <h1 className ="text-slate-700" >DECATHLON CORPORATE</h1>
-                  <div>
-                    <h1>Nolly United</h1>
-                    <h1>Lavora con Noi</h1>
-                    <h1>Impegni sostenabilita</h1>
-                  </div>
-                  </div>
-                  <div>
-                  <h1 className ="text-slate-700" >DECATHLON RENTAL</h1>
-                  <div>
-                    <h1>Decathlon Rental</h1>
-                    <h1>Come funziona</h1>
-                    <h1>Aiuto</h1>
-                  </div>
-                  </div>
-                  <div>
-                  <h1 className ="text-slate-700" >IL MIO ACCOUNT</h1>
-                  <div>
-                    <h1>I miei aquisti</h1>
-                    <h1>I miei noleggi</h1>
-                    <h1>I miei aquisti</h1>
-                  </div>
-                  </div>
-                  <div>
-                  <h1 className ="text-slate-700" >COSA POSSO NOLEGGIARE</h1>
-                  <div>
-                    <h1>Biciclette da bambino</h1>
-                    <h1>Decathlon Rent</h1>
-                  </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-green-500 p-10">   
-                <div className="relative h-16 w-40"> 
-      <Image
-        src="/sportex_cropped.png"
-        alt="Sportex logo"
-        fill
-        className="object-contain"
-      />
-        </div>
-        <div className="text-slate-500"> @2023 Decathlon</div>
-        <div className="w-full border-black border-t my-3 border-2"></div>
-        <div>
-          <ul className="flex w-full space-x-8">
-            <ol>Condizioni di noleggio</ol>
-          <ol>Condizioni generali di utilizzo del sito</ol>
-          <ol>Condizioni generali di assicurazione</ol>
-          <ol>Informativa sulla privacy</ol>
-          <ol>Cookies</ol>
-          </ul>
-        </div>
-        </div>
-            </div>
-          </div>
+<div className="mx-4 my-6">
+      <div className="text-2xl sm:text-3xl font-bold my-4 md:my-7 text-gray-800">
+        Cerca per Sport
+      </div>
+      <div className="flex overflow-x-scroll space-x-4 pb-2 scrollbar-hide">
+        {mainSports && mainSports.map((sport, index) => (
+          <SportsSection sport={sport} key={index}/>
+        ))}
+      </div>
+    </div>
+    <div>
+
+          <Footer/>
+    </div>
     </div>
   );
 }

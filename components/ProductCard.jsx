@@ -16,8 +16,10 @@ function ProductCard({product}) {
                   </div>
                   <div>
                   </div>
-                  <div>{product.title}</div>
-                  <div><span className="">{product.dailyPrice}</span> per <span>day</span></div>
+                  <div className="w-full truncate">
+                    {product.title}
+                  </div>
+                  <div className=''><span className="">{product.dailyPrice}</span> per <span>day</span></div>
                   <div><span className='text-green-500'> Available</span></div>
                   <div>Location:  <span>{product.location}</span></div>
                   </div>

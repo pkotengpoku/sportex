@@ -62,21 +62,21 @@ const SubHeader = () => {
   }, []);
 
   return (
-    <div className="w-full bg-gray-100">
+    <div className="w-full">
       <div className="max-w-7xl mx-auto">
 
         
         {/* Navigation Component */}
         <div 
           ref={headerRef}
-          className="subheader-container w-fullrounded-lg shadow-md"
+          className="subheader-container w-fullrounded-lg shadow-b-md"
           onMouseLeave={handleMouseLeave}
         >
-          <div className="max-w-7xl mx-auto flex justify-between text-lg py-3 relative">
+          <div className="max-w-7xl mx-auto flex justify-between text-lg py-1 relative">
             {menuItems.map((item, index) => (
               <div
                 key={index}
-                className="relative cursor-pointer px-6 py-2"
+                className="relative cursor-pointer px-6 py-1"
                 onMouseEnter={() => handleMouseEnter(index)}
               >
                 <span className="font-semibold text-gray-800">{item.title}</span>
