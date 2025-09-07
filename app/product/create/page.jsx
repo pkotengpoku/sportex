@@ -70,7 +70,8 @@ export default function ProductUploadPage() {
 
   const handleCategory = (item) => {
     if (selectedCategories.includes(item)) {
-      // removal handled inside FadeCategory for smooth fade-out
+
+
       removeCategory(item)
       return;
     } else {
