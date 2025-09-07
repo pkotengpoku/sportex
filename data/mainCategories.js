@@ -41,6 +41,6 @@ export const mainSports = [
   },
   {
     name: "Altre Categorie",
-    imageUrl: ["https://www.michiganmedicine.org/sites/default/files/styles/article_main_image/public/2024-03/senior-man-golfing-sunset-swing.jpg?h=f0fb51a5&itok=BVol8OyS"],
+    imageUrl: ["https://scontent.fmil1-1.fna.fbcdn.net/v/t1.6435-9/124971843_1754099651410944_8529784877222744425_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=3a1ebe&_nc_ohc=wlaPLptX5jUQ7kNvwEhe6pO&_nc_oc=AdlL2HXNX2W3DLTZyBYZuDcMCfL92gF2k1TX7gjAhef9n5L6nJhSV2xZL0i5G8H4bgA&_nc_zt=23&_nc_ht=scontent.fmil1-1.fna&_nc_gid=afGFmp-m_OCJvGCefXjCaQ&oh=00_AfaJX3w6q8TArdd3Aq3ue3nbaWoka6pfnyb9nq2Y3oLxWQ&oe=68E53338","https://www.michiganmedicine.org/sites/default/files/styles/article_main_image/public/2024-03/senior-man-golfing-sunset-swing.jpg?h=f0fb51a5&itok=BVol8OyS"],
   },
 ];

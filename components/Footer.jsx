@@ -19,7 +19,7 @@ const Footer = () => {
             
             <div className="w-full md:w-2/3 flex flex-wrap justify-center md:justify-between space-y-4 md:space-y-0 md:space-x-4">
               <div className="w-1/2 sm:w-1/4">
-                <h1 className="text-slate-700 font-semibold mb-2">DECATHLON CORPORATE</h1>
+                <h1 className="text-slate-700 font-semibold mb-2">Sportex CORPORATE</h1>
                 <ul className="text-sm space-y-1">
                   <li><a href="#" className="hover:underline">Nolly United</a></li>
                   <li><a href="#" className="hover:underline">Lavora con Noi</a></li>
@@ -27,9 +27,9 @@ const Footer = () => {
                 </ul>
               </div>
               <div className="w-1/2 sm:w-1/4">
-                <h1 className="text-slate-700 font-semibold mb-2">DECATHLON RENTAL</h1>
+                <h1 className="text-slate-700 font-semibold mb-2">Sportex RENTAL</h1>
                 <ul className="text-sm space-y-1">
-                  <li><a href="#" className="hover:underline">Decathlon Rental</a></li>
+                  <li><a href="#" className="hover:underline">Sportex Rental</a></li>
                   <li><a href="#" className="hover:underline">Come funziona</a></li>
                   <li><a href="#" className="hover:underline">Aiuto</a></li>
                 </ul>
@@ -46,7 +46,7 @@ const Footer = () => {
                 <h1 className="text-slate-700 font-semibold mb-2">COSA POSSO NOLEGGIARE</h1>
                 <ul className="text-sm space-y-1">
                   <li><a href="#" className="hover:underline">Biciclette da bambino</a></li>
-                  <li><a href="#" className="hover:underline">Decathlon Rent</a></li>
+                  <li><a href="#" className="hover:underline">Sportex Rent</a></li>
                 </ul>
               </div>
             </div>
@@ -56,7 +56,7 @@ const Footer = () => {
             <div className="relative h-16 w-40">
               <img src="/sportex_cropped.png" alt="Sportex logo" className="object-contain w-full h-full" />
             </div>
-            <div className="text-sm text-slate-500">© 2023 Decathlon</div>
+            <div className="text-sm text-slate-500">© 2023 Sportex</div>
           </div>
           <div className="w-full border-t border-gray-400 my-4"></div>
           
