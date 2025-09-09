@@ -34,25 +34,26 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-     < Header />
+    // ✅ Added overflow-x-hidden here
+    <div className="overflow-x-hidden">
+      <Header />
       <div className="relative">
-      <div className="relative w-full h-[490px] ">
-      <Image
-          className="dark:invert "
-          objectPosition="bottom"
-          objectFit="cover"
-          src="/bannerr.jpg"
-          alt="Next.js logo"
-          priority
-          layout="fill"
-        />
-        <div className="absolute inset-0 bg-black opacity-45"></div>
-      </div>
-        <div className="absolute w-full bottom-4">
-        <div className="bg-black w-fit rounded-lg p-2 text-white text-2xl font-bold mx-auto">
-          SHOP   NOW
+        <div className="relative w-full h-[490px] ">
+          <Image
+            className="dark:invert "
+            objectPosition="bottom"
+            objectFit="cover"
+            src="/bannerr.jpg"
+            alt="Next.js logo"
+            priority
+            layout="fill"
+          />
+          <div className="absolute inset-0 bg-black opacity-45"></div>
         </div>
+        <div className="absolute w-full bottom-4">
+          <div className="bg-black w-fit rounded-lg p-2 text-white text-2xl font-bold mx-auto">
+            SHOP NOW
+          </div>
         </div>
       </div>
       <div className="mx-8 mt-3">
@@ -63,23 +64,21 @@ export default function Home() {
               <ProductCard product={product} />
             </Link>
           ))}
-
         </div>
       </div>
-<div className="mx-4 my-6">
-      <div className="text-2xl sm:text-3xl font-bold my-4 md:my-7 text-gray-800">
-        Cerca per Sport
+      <div className="mx-4 my-6">
+        <div className="text-2xl sm:text-3xl font-bold my-4 md:my-7 text-gray-800">
+          Cerca per Sport
+        </div>
+        <div className="flex overflow-x-scroll space-x-4 pb-2 scrollbar-hide">
+          {mainSports && mainSports.map((sport, index) => (
+            <SportsSection sport={sport} key={index}/>
+          ))}
+        </div>
       </div>
-      <div className="flex overflow-x-scroll space-x-4 pb-2 scrollbar-hide">
-        {mainSports && mainSports.map((sport, index) => (
-          <SportsSection sport={sport} key={index}/>
-        ))}
+      <div>
+        <Footer/>
       </div>
-    </div>
-    <div>
-
-          <Footer/>
-    </div>
     </div>
   );
 }
