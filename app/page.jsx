@@ -8,10 +8,13 @@ import Header from "@/components/Header";
 import { useEffect, useState } from "react";
 import SportsSection from "@/components/SportsCard";
 import Footer from "@/components/Footer";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   
   const [products, setProducts] = useState([])
+  const router = useRouter()
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -51,8 +54,8 @@ export default function Home() {
           <div className="absolute inset-0 bg-black opacity-45"></div>
         </div>
         <div className="absolute w-full bottom-4">
-          <div className="bg-black w-fit rounded-lg p-2 text-white text-2xl font-bold mx-auto">
-            SHOP NOW
+          <div className="bg-green-700 opacity-80 cursor-pointer w-fit rounded-lg p-1.5 text-white text-2xl font-bold mx-auto" onClick={()=>router.push("/product/products")}>
+            Discover
           </div>
         </div>
       </div>

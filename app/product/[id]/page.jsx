@@ -5,63 +5,47 @@ import Header from "@/components/Header";
 import Image from "next/image";
 
 import Slider from "react-slick";
-
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { useCart } from "@/context/CartContext";
 import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export default function ProductPage() {
   const params = useParams();
-  const productId = params.id
+  const productId = params.id;
 
   const { cart, addToCart } = useCart();
-
 
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
 
   const [state, setState] = useState([
-    {
-      startDate: today,
-      endDate: tomorrow,
-      key: 'selection'
-    }
+    { startDate: today, endDate: tomorrow, key: 'selection' }
   ]);
 
-
   const [product, setProduct] = useState({});
-  const [size, setSize] = useState('');
+  const [size, setSize] = useState(null);
 
-  const handleChange = (event) => setSize(event.target.value);
   const handleCartChange = () => {
-    if (!size) {
-      console.log("❌ Please select a size before adding to cart");
+    if (size === null) {
+      console.log("❌ Please select a product type before adding to cart");
       return;
     }
 
-    console.log("✅ Adding to cart:", product);
-
     addToCart(
       {
-        id: product._id, // normalize id
+        id: product._id,
         name: product.title,
-        price: product.final_price || product.initial_price,
+        price: product.product_types[size]?.price || product.final_price,
         image: product.image_url?.[0] || "/placeholder.jpg",
-        size: size, // 👈 also store the chosen size
+        size: product.product_types[size]?.name,
       },
       1
     );
   };
-
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -72,7 +56,7 @@ export default function ProductPage() {
         setProduct(data);
       } catch (err) {
         console.error(err);
-        setProduct(false); // mark as not found
+        setProduct(false);
       }
     };
     fetchProduct();
@@ -91,15 +75,15 @@ export default function ProductPage() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col overflow-x-hidden">
       <Header />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
         {/* Image Slider */}
-        <div>
+        <div className="w-full">
           <Slider {...sliderSettings}>
             {product.image_url?.map((img, idx) => (
-              <div key={idx} className="relative w-full h-96">
+              <div key={idx} className="relative w-full h-64 sm:h-80 md:h-[500px]">
                 <Image
                   src={img}
                   alt={product.title}
@@ -113,55 +97,67 @@ export default function ProductPage() {
 
         {/* Product Details */}
         <div className="flex flex-col gap-4">
-          <h1 className="text-3xl font-bold">{product.title}</h1>
-          <p>{product.description}</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">{product.title}</h1>
+          <p className="text-gray-700">{product.description}</p>
 
-          {/* Size selector */}
-          <FormControl sx={{ minWidth: 120 }}>
-            <InputLabel>Size</InputLabel>
-            <Select value={size} onChange={handleChange} label="Size">
-              <MenuItem value=""><em>None</em></MenuItem>
-              <MenuItem value="M">Taglia M</MenuItem>
-              <MenuItem value="L">Taglia L</MenuItem>
-              <MenuItem value="XL">Taglia XL</MenuItem>
-            </Select>
-          </FormControl>
-          {!size && <div className="text-red-500">Please select a size</div>}
+          {/* Product Types Selector */}
+          {product.product_types?.length > 0 && (
+            <div className="flex flex-col gap-2 mt-4">
+              <span className="font-medium text-gray-700">Choose an option:</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {product.product_types.map((option, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setSize(index)}
+                    className={`border rounded-lg p-3 text-left transition
+                      ${size === index ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-green-400 hover:bg-green-50"}`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold">{option.name}</span>
+                      <span className="text-green-600 font-bold">{option.price} €</span>
+                    </div>
+                    <p className="text-gray-500 text-sm mt-1">{option.description}</p>
+                  </button>
+                ))}
+              </div>
+              {size === null && (
+                <p className="text-red-500 text-sm mt-1">Please select a product type</p>
+              )}
+            </div>
+          )}
 
-          {/*Calender*/}
-          <DateRangePicker
-            ranges={state}
-            onChange={item => setState([item.selection])}
-            disabledDates={[]}
-          />
-          <div className="mt-5">
+          {/* Calendar */}
+          <div className="mt-4">
+            <DateRangePicker
+              ranges={state}
+              onChange={item => setState([item.selection])}
+              disabledDates={[]}
+              className="w-full"
+            />
             {state.length > 0 && (() => {
               const formatDate = (date) => {
                 const formatted = date.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
-                // capitalize first letter of each word
-                return formatted.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                return formatted.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
               };
-
-              const startDate = state[0].startDate;
-              const endDate = state[0].endDate;
-
-              const start = formatDate(startDate); // for display
-              const end = formatDate(endDate);     // for display
-
-              const diffInTime = endDate.getTime() - startDate.getTime();
-              const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
-
-              return `${start} – ${end} (${diffInDays} day(s))`;
+              const start = formatDate(state[0].startDate);
+              const end = formatDate(state[0].endDate);
+              const diffDays = Math.ceil((state[0].endDate.getTime() - state[0].startDate.getTime()) / (1000*60*60*24));
+              return <div className="mt-2">{start} – {end} ({diffDays} day(s))</div>;
             })()}
           </div>
 
           {/* Pricing */}
-          <div>
-            <div className="text-xl font-semibold">{product.final_price} € / al giorno</div>
-            <div>Total for 5 days: {product.final_price * 5} {product.currency}</div>
+          <div className="mt-4">
+            <div className="text-xl font-semibold">
+              {size !== null ? product.product_types[size].price : product.final_price} € / al giorno
+            </div>
+            <div>
+              Total for 5 days: {size !== null ? product.product_types[size].price * 5 : product.final_price * 5} {product.currency}
+            </div>
           </div>
 
-          {/* Rental info */}
+          {/* Rental Info */}
           <div className="flex flex-col gap-2 mt-4">
             {[
               "Cancellazione gratis fino a 24 ore prima del primo giorno di noleggio",
@@ -177,10 +173,11 @@ export default function ProductPage() {
               </div>
             ))}
           </div>
+
           <button
             type="button"
-            className="w-36 bg-green-500 hover:bg-green-600 active:scale-95 transition p-3 rounded-lg font-bold text-white"
             onClick={handleCartChange}
+            className="mt-4 w-full sm:w-48 bg-green-500 hover:bg-green-600 active:scale-95 transition p-3 rounded-lg font-bold text-white"
           >
             Add to Cart
           </button>

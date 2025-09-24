@@ -5,6 +5,7 @@ const ProductSchema = new mongoose.Schema({
     seller_name: { type: String, default: "Unknown Seller" },
     brand: { type: String, default: "No Brand" },
     description: { type: String, required: true, default: "No description available." },
+    product_types: {type: [Object], default: []},
     initial_price: { type: Number, default: 0 },
     final_price: { type: Number, default: 0 },
     currency: { type: String, default: "EUR" },
