@@ -44,11 +44,11 @@ function SearchPageInner() {
   const [isFiltersOpen, setFiltersOpen] = useState(false);
   const [product, setProduct] = useState(searchParams.get("product") || "");
   const [category, setCategory] = useState(searchParams.get("category") || "");
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState([]);
   const [city, setCity] = useState(searchParams.get("location") || "");
   const [dates, setDates] = useState({
-    startDate: searchParams.get("startDate") ? new Date(searchParams.get("startDate")!) : null,
-    endDate: searchParams.get("endDate") ? new Date(searchParams.get("endDate")!) : null,
+    startDate: searchParams.get("startDate") ? new Date(searchParams.get("startDate")) : null,
+    endDate: searchParams.get("endDate") ? new Date(searchParams.get("endDate")) : null,
   });
 
   // Filters state
@@ -79,8 +79,8 @@ function SearchPageInner() {
     setCity(searchParams.get("location") || "");
     setCategory(searchParams.get("category") || "");
     setDates({
-      startDate: searchParams.get("startDate") ? new Date(searchParams.get("startDate")!) : null,
-      endDate: searchParams.get("endDate") ? new Date(searchParams.get("endDate")!) : null,
+      startDate: searchParams.get("startDate") ? new Date(searchParams.get("startDate")) : null,
+      endDate: searchParams.get("endDate") ? new Date(searchParams.get("endDate")) : null,
     });
   }, [searchParams]);
 
