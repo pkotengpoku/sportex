@@ -6,7 +6,7 @@ import Link from "next/link";
 const SportsSection = ({ sport }) => {
   return (
     <Link
-            href={`/product/68b5d0650d3a9198c89473b3`}
+            href={`/search/?category=${sport.name_url}`}
             className="flex-shrink-0 group"
           >
             <div className="w-72 sm:w-96 h-96 bg-white rounded-xl overflow-hidden shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-xl cursor-pointer">

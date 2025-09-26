@@ -71,7 +71,7 @@ export default function Home() {
       </div>
       <div className="mx-4 my-6">
         <div className="text-2xl sm:text-3xl font-bold my-4 md:my-7 text-gray-800">
-          Cerca per Sport
+          Trending Sports
         </div>
         <div className="flex overflow-x-scroll space-x-4 pb-2 scrollbar-hide">
           {mainSports && mainSports.map((sport, index) => (
