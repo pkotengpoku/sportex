@@ -4,7 +4,6 @@ import {
   addMonths,
   subMonths,
   startOfMonth,
-  endOfMonth,
   startOfWeek,
   addDays,
   isSameMonth,
@@ -14,48 +13,30 @@ import {
   startOfDay,
 } from "date-fns";
 import { it } from "date-fns/locale";
-
+import { useRouter } from "next/navigation";
 
 // --- Helper Icon Components ---
 const ChevronLeftIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-6 h-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M15.75 19.5L8.25 12l7.5-7.5"
-    />
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+    viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
+    className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round"
+      d="M15.75 19.5L8.25 12l7.5-7.5"/>
   </svg>
 );
 
 const ChevronRightIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-6 h-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M8.25 4.5l7.5 7.5-7.5 7.5"
-    />
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+    viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
+    className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round"
+      d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
   </svg>
 );
 
 // --- Calendar Component ---
 const AirbnbCalendar = ({ onDatesSelected, initialDates }) => {
-  const [currentMonth, setCurrentMonth] = useState(
-    initialDates?.startDate || new Date()
-  );
+  const [currentMonth, setCurrentMonth] = useState(initialDates?.startDate || new Date());
   const [startDate, setStartDate] = useState(initialDates?.startDate || null);
   const [endDate, setEndDate] = useState(initialDates?.endDate || null);
 
@@ -110,23 +91,14 @@ const AirbnbCalendar = ({ onDatesSelected, initialDates }) => {
             const isStartDate = startDate && isSameDay(day, startDate);
             const isEndDate = endDate && isSameDay(day, endDate);
             const isInRange =
-              startDate &&
-              endDate &&
+              startDate && endDate &&
               isWithinInterval(day, { start: startDate, end: endDate });
 
             const dayClass = `text-sm w-10 h-10 flex items-center justify-center rounded-full transition-colors 
               ${!isCurrentMonth ? "text-transparent cursor-default" : ""} 
               ${isPast ? "text-gray-300 line-through cursor-not-allowed" : ""}
-              ${
-                !isPast && isCurrentMonth
-                  ? "hover:bg-gray-200 cursor-pointer"
-                  : ""
-              }
-              ${
-                isStartDate || isEndDate
-                  ? "bg-gray-900 text-white hover:bg-gray-900"
-                  : ""
-              }`;
+              ${!isPast && isCurrentMonth ? "hover:bg-gray-200 cursor-pointer" : ""}
+              ${isStartDate || isEndDate ? "bg-gray-900 text-white hover:bg-gray-900" : ""}`;
 
             let wrapperClass = "relative h-10 flex items-center justify-center";
             if (isInRange) {
@@ -163,9 +135,7 @@ const AirbnbCalendar = ({ onDatesSelected, initialDates }) => {
         <button
           onClick={prevMonth}
           disabled={isPrevDisabled}
-          className={`p-2 rounded-full ${
-            isPrevDisabled ? "text-gray-300" : "hover:bg-gray-100"
-          }`}
+          className={`p-2 rounded-full ${isPrevDisabled ? "text-gray-300" : "hover:bg-gray-100"}`}
         >
           <ChevronLeftIcon />
         </button>
@@ -188,20 +158,6 @@ const AirbnbCalendar = ({ onDatesSelected, initialDates }) => {
         {renderMonth(currentMonth)}
         {renderMonth(addMonths(currentMonth, 1))}
       </div>
-      <div className="flex items-center space-x-2 border-t mt-4 pt-4 px-4">
-        {["Date esatte", "± 1 giorno", "± 2 giorni", "± 3 giorni"].map(
-          (option, i) => (
-            <button
-              key={option}
-              className={`text-sm font-semibold px-4 py-2 rounded-full border ${
-                i === 0 ? "bg-gray-100" : "hover:border-black"
-              }`}
-            >
-              {option}
-            </button>
-          )
-        )}
-      </div>
     </div>
   );
 };
@@ -209,47 +165,42 @@ const AirbnbCalendar = ({ onDatesSelected, initialDates }) => {
 // --- Modal Component ---
 const CalendarModal = ({ isOpen, onClose, onDatesSelected, initialDates }) => {
   if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-xl shadow-lg"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <AirbnbCalendar
-          onDatesSelected={onDatesSelected}
-          initialDates={initialDates}
-        />
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20"
+      onClick={onClose}>
+      <div className="bg-white rounded-xl shadow-lg"
+        onClick={(e) => e.stopPropagation()}>
+        <AirbnbCalendar onDatesSelected={onDatesSelected} initialDates={initialDates} />
       </div>
     </div>
   );
 };
 
 // --- Main Exported Component ---
-const ProductPageSearch = () => {
-  const [location, setLocation] = useState("Milan");
-  const [searchProduct, setSearchProduct] = useState("E-Bike");
+const ProductPageSearch = ({ product, city, dates, onDatesChange }) => {
   const [isCalendarOpen, setCalendarOpen] = useState(false);
-  const [dates, setDates] = useState({
-    startDate: null,
-    endDate: null,
-  });
+  const [searchProduct, setSearchProduct] = useState(product || "");
+  const [location, setLocation] = useState(city || "");
+  const router = useRouter();
 
   const handleDatesSelected = (selectedDates) => {
-    setDates(selectedDates);
-    // no auto-close here, wait for Done or outside click
+    onDatesChange(selectedDates);
   };
 
   const getDateValue = () => {
     if (!dates.startDate) return "Select Dates";
     if (!dates.endDate) return format(dates.startDate, "MMM dd");
-    return `${format(dates.startDate, "MMM dd")} - ${format(
-      dates.endDate,
-      "MMM dd"
-    )}`;
+    return `${format(dates.startDate, "MMM dd")} - ${format(dates.endDate, "MMM dd")}`;
+  };
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (searchProduct) params.set("product", searchProduct);
+    if (location) params.set("location", location);
+    if (dates.startDate) params.set("startDate", dates.startDate.toISOString());
+    if (dates.endDate) params.set("endDate", dates.endDate.toISOString());
+
+    router.push(`/search?${params.toString()}`);
   };
 
   return (
@@ -257,7 +208,7 @@ const ProductPageSearch = () => {
       <div className="w-full flex my-3">
         <div className="w-10/12 md:w-8/12 lg:w-9/12 rounded-full mx-auto py-2 pr-2 pl-6 flex items-center h-16 border border-slate-300 shadow">
           <div className="flex-grow px-2">
-            <label className="block text-xs font-bold ">Product</label>
+            <label className="block text-xs font-bold">Product</label>
             <input
               type="text"
               placeholder="Product or category"
@@ -267,10 +218,7 @@ const ProductPageSearch = () => {
             />
           </div>
           <div className="h-8 border-r border-slate-300"></div>
-          <div
-            className="flex-grow px-4 cursor-pointer"
-            onClick={() => setCalendarOpen(true)}
-          >
+          <div className="flex-grow px-4 cursor-pointer" onClick={() => setCalendarOpen(true)}>
             <label className="block text-xs font-bold">Dates</label>
             <input
               type="text"
@@ -290,25 +238,19 @@ const ProductPageSearch = () => {
               className="w-full outline-none border-none focus:ring-0 p-0"
             />
           </div>
-          <div className="bg-amber-300 rounded-full h-12 w-12 flex items-center justify-center cursor-pointer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2.1}
-              stroke="currentColor"
-              className="size-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-              />
+          <div
+            onClick={handleSearch}
+            className="bg-amber-300 rounded-full h-12 w-12 flex items-center justify-center cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" strokeWidth={2.1}
+              stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
             </svg>
           </div>
-        </div>    
+        </div>
       </div>
-
       <CalendarModal
         isOpen={isCalendarOpen}
         onClose={() => setCalendarOpen(false)}
