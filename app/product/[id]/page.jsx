@@ -30,10 +30,16 @@ export default function ProductPage() {
   const [size, setSize] = useState(null);
 
   const handleCartChange = () => {
-    if (size === null) {
+/*     if (size === null) {
       console.log("❌ Please select a product type before adding to cart");
       return;
+    } */
+   /* cart.map((item)=>{
+    if(item._seller_id!== product._seller_id){
+      console.log("Only items froma single seller can be added at a time.")
+      return
     }
+   }) */
 
     addToCart(
       {
@@ -177,9 +183,9 @@ export default function ProductPage() {
           <button
             type="button"
             onClick={handleCartChange}
-            className="mt-4 w-full sm:w-48 bg-green-500 hover:bg-green-600 active:scale-95 transition p-3 rounded-lg font-bold text-white"
+            className="mt-4 w-full sm:w-48 bg-amber-400 hover:bg-amber-500 active:scale-95 transition p-3 rounded-lg font-bold text-white"
           >
-            Add to Cart
+            Rent Item
           </button>
         </div>
       </div>

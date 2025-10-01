@@ -125,8 +125,8 @@ function SearchPageInner() {
       </Head>
 
       {/* Search bar and filters */}
-      <div className="flex justify-center items-center gap-3">
-        <div className="w-7/12">
+      <div className="flex justify-center items-center mx-2 gap-3">
+        <div className="w-10/12 md:w-8/12 lg:w-9/12">
           <ProductPageSearch
             product={product}
             setProduct={setProduct}
@@ -159,7 +159,7 @@ function SearchPageInner() {
             </header>
 
             {/* Product grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-8">
               {filteredProducts.map((item) => (
                 <div key={item._id} className="group">
                   <div className="relative mb-2">
@@ -189,9 +189,8 @@ function SearchPageInner() {
                         </div>
                       )}
                     </div>
-                    <p className="text-gray-500 text-sm mt-1">{item.description?.slice(0, 80)}...</p>
+                    <p className="text-gray-500 text-sm mt-1">{item.description?.slice(0, 55)}...</p>
                     <div className="mt-2">
-                      {item.initial_price && <span className="text-gray-500 line-through mr-2">${item.initial_price}</span>}
                       <span className="font-semibold">${item.final_price}</span>
                     </div>
                   </div>

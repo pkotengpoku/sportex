@@ -206,7 +206,7 @@ const ProductPageSearch = ({ product, city, dates, onDatesChange }) => {
   return (
     <div>
       <div className="w-full flex my-3">
-        <div className="w-10/12 md:w-8/12 lg:w-9/12 rounded-full mx-auto py-2 pr-2 pl-6 flex items-center h-16 border border-slate-300 shadow">
+        <div className=" rounded-full mx-auto py-2 pr-2 pl-6 flex items-center h-16 border border-slate-300 shadow">
           <div className="flex-grow px-2">
             <label className="block text-xs font-bold">Product</label>
             <input
@@ -240,7 +240,7 @@ const ProductPageSearch = ({ product, city, dates, onDatesChange }) => {
           </div>
           <div
             onClick={handleSearch}
-            className="bg-amber-300 rounded-full h-12 w-12 flex items-center justify-center cursor-pointer"
+            className="bg-amber-300 rounded-full h-10 w-10 md:h-11 lg:12 md:w-11 lg:w-12 flex items-center justify-center cursor-pointer flex-shrink-0"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
               viewBox="0 0 24 24" strokeWidth={2.1}

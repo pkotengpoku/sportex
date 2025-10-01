@@ -54,7 +54,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black opacity-45"></div>
         </div>
         <div className="absolute w-full bottom-4">
-          <div className="bg-green-700 opacity-80 cursor-pointer w-fit rounded-lg p-1.5 text-white text-2xl font-bold mx-auto" onClick={()=>router.push("/product/products")}>
+          <div className="bg-green-700 opacity-80 cursor-pointer w-fit rounded-lg p-1.5 text-white text-2xl font-bold mx-auto hover:bg-green-800" onClick={()=>router.push("/search")}>
             Discover
           </div>
         </div>
