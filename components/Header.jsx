@@ -1,11 +1,12 @@
 "use client"
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import SubHeader from './SubHeader';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import SearchTab from './SearchTab';
+import Link from 'next/link';
 
 const Header = () => {
   const { data: session } = useSession();
@@ -16,6 +17,7 @@ const Header = () => {
   const router = useRouter();
   const { cart } = useCart();
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [pathname, setPathname] = useState('');
 
   const menuItems = [
     { title: 'Acquatici', links: ['Surf', 'Kayak', 'SUP', 'Windsurf', 'Kitesurf'] },
@@ -26,10 +28,18 @@ const Header = () => {
     { title: 'Ciclismo', links: ['Bici da corsa', 'Mountain Bike', 'E-bike'] }
   ];
 
+  useEffect(() => {
+    // This code will run on the client side after the component mounts
+    if (typeof window !== 'undefined') {
+      setPathname(window.location.pathname.replace('/', ''));
+    }
+  }, []); 
+
   const handleSignInWithProvider = (providerId) => {
     setIsModalOpen(false);
     signIn(providerId, { callbackUrl: currentUrl });
   };
+
 
   const handleSignInWithEmail = async () => {
     if (emailInput) {
@@ -77,8 +87,21 @@ const Header = () => {
             {/* Right: Icons */}
             <div className="flex items-center gap-4 md:gap-6">
               {/* Profile */}
-              <button onClick={() => setIsModalOpen(true)} aria-label="Profile">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              
+              {session?(<div>
+                <Link href={'/profile'} aria-label="Profile" className='cursor-pointer'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill={`${pathname === 'profile'? '#22c55e' : 'none'}`} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 `}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 
+                     3.75 3.75 0 0 1 7.5 0ZM4.501 
+                     20.118a7.5 7.5 0 0 1 14.998 
+                     0A17.933 17.933 
+                     0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+                </svg>
+              </Link>
+              </div>)
+              :(<div>
+                <button onClick={() => setIsModalOpen(true)} aria-label="Profile" className='cursor-pointer '>
+                <svg xmlns="http://www.w3.org/2000/svg" fill={`${pathname === 'profile'? '#22c55e' : 'none'}`} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className= {`w-6 h-6`}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 
                      3.75 3.75 0 0 1 7.5 0ZM4.501 
                      20.118a7.5 7.5 0 0 1 14.998 
@@ -86,7 +109,7 @@ const Header = () => {
                      0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
                 </svg>
               </button>
-
+              </div>)}
               {/* Wishlist */}
               <button aria-label="Wishlist">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import { mainCategories } from '@/data/categories';
 import { useEffect } from "react";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
+import { useRouter } from "next/navigation";
+import LocationInput from "@/components/LocationInput";
 
 /**
  * Product Upload Page (Airbnb-like detailed UI)
@@ -39,26 +41,23 @@ const toUrlName = (s = "") =>
 
 export default function ProductUploadPage() {
   // Basic single-value fields
-  const [title, setTitle] = useState('Rockrider E-Bike 29" Orange');
+  const router = useRouter()
+  const [title, setTitle] = useState('');
   const [nameUrl, setNameUrl] = useState(toUrlName(title));
-  const [brand, setBrand] = useState("Rockrider");
-  const [asin, setAsin] = useState("21");
-  const [inputAsin, setInputAsin] = useState("N/A");
-  const [upc, setUpc] = useState("N/A");
-  const [description, setDescription] = useState(
-    "Designed for touring on any terrain with medium climbs.\n\nThis versatile eMTB is perfect for touring on any terrain with medium climbs. Download the Decathlon Ride app to unleash the full potential of your bike!"
-  );
-  const [finalPrice, setFinalPrice] = useState(2199);
-  const [initialPrice, setInitialPrice] = useState(2199.99);
-  const [discount, setDiscount] = useState("2");
-  const [currency, setCurrency] = useState("USD");
-  const [availability, setAvailability] = useState("1");
+  const [brand, setBrand] = useState("");
+  const [asin, setAsin] = useState("");
+  const [inputAsin, setInputAsin] = useState("");
+  const [upc, setUpc] = useState("");
+  const [description, setDescription] = useState("");
+  const [finalPrice, setFinalPrice] = useState(0);
+  const [initialPrice, setInitialPrice] = useState(null);
+  const [discount, setDiscount] = useState(null);
+  const [currency, setCurrency] = useState("EUR");
+  const [availability, setAvailability] = useState(1);
   const [isAvailable, setIsAvailable] = useState(true);
   const [badge, setBadge] = useState("None");
-  const [amazonChoice, setAmazonChoice] = useState(false);
   const [format, setFormat] = useState("Standard");
   const [department, setDepartment] = useState("General");
-  const [domain, setDomain] = useState("amazon.com");
   const [originUrl, setOriginUrl] = useState("#");
   const [countryOfOrigin, setCountryOfOrigin] = useState("Unknown");
   const [manufacturer, setManufacturer] = useState("Unknown");
@@ -66,9 +65,8 @@ export default function ProductUploadPage() {
   const [productDimensions, setProductDimensions] = useState('29"');
   const [itemWeight, setItemWeight] = useState("Unknown");
   const [ingredients, setIngredients] = useState("Not specified");
-  const [dateFirstAvailable, setDateFirstAvailable] = useState("2002-01-09");
-  const [createdAt, setCreatedAt] = useState(new Date().toISOString().split("T")[0]);
-  const [updatedAt, setUpdatedAt] = useState(new Date().toISOString().split("T")[0]);
+  const [dateFirstAvailable, setDateFirstAvailable] = useState(new Date().toISOString().split("T")[0]);
+  const [location, setLocation] = useState("");
 
   // Arrays
   const [categories, setCategories] = useState(["E-Bike"]);
@@ -241,7 +239,7 @@ export default function ProductUploadPage() {
       description,
       discount,
       features,
-      final_price: Number(finalPrice),
+      final_price: finalPrice ? parseFloat(finalPrice.replace(",", ".")) : 0,
       format,
       image_url: imageUrls,
       images: imageUrls,
@@ -282,6 +280,8 @@ export default function ProductUploadPage() {
       if (res.ok) {
         const body = await res.json();
         alert("Product uploaded: " + (body?.id || "ok"));
+      router.push(`/product/${body._id}`); 
+        
         // reset or keep values as needed
       } else {
         const err = await res.text();
@@ -400,66 +400,72 @@ export default function ProductUploadPage() {
   </div>
 </div>
 
+        <div>
+  <label className="text-sm text-gray-700">Product Description</label>
+  <textarea
+    value={description}
+    onChange={(e) => setDescription(e.target.value)}
+    placeholder="Write a detailed description of your product..."
+    rows={5}
+    className="w-full border rounded-md px-3 py-2 resize-none "
+  />
+</div>
+
 
               {/* Price & availability */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>
-                  <label className="text-sm text-gray-700">Final price</label>
-                  <input
-                    type="number"
-                    value={finalPrice}
-                    onChange={(e) => setFinalPrice(e.target.value)}
-                    className="w-full border rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-700">Initial price</label>
-                  <input
-                    type="number"
-                    value={initialPrice}
-                    onChange={(e) => setInitialPrice(e.target.value)}
-                    className="w-full border rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-700">Discount (%)</label>
-                  <input
-                    type="text"
-                    value={discount}
-                    onChange={(e) => setDiscount(e.target.value)}
-                    className="w-full border rounded-md px-3 py-2"
-                  />
-                </div>
+         <div>
+  <label className="text-sm text-gray-700">Price (€)</label>
+  <input
+    type="text"
+    inputMode="decimal"
+    value={finalPrice}
+    onChange={(e) => {
+      let val = e.target.value;
+
+      // Allow only numbers and a single comma
+      if (/^[0-9]*,?[0-9]*$/.test(val)) {
+        // Remove leading zeros unless the value is just "0" or starts with "0,"
+        if (val.length > 1 && !val.startsWith("0,")) {
+          val = val.replace(/^0+/, "");
+        }
+
+        setFinalPrice(val);
+      }
+    }}
+    placeholder="e.g. 199,99"
+    className="w-full border rounded-md px-3 py-2"
+  />
+</div>
+
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
-                  <label className="text-sm text-gray-700">Currency</label>
-                  <input value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-full border rounded-md px-3 py-2" />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-700">Availability</label>
-                  <input value={availability} onChange={(e) => setAvailability(e.target.value)} className="w-full border rounded-md px-3 py-2" />
-                </div>
+  <label className="text-sm text-gray-700">Availability</label>
+  <input
+    type="text"
+    value={availability}
+    onChange={(e) => {
+      const val = e.target.value;
+      if (/^\d*$/.test(val)) {
+        setAvailability(val);
+      }
+    }}
+    className="w-full border rounded-md px-3 py-2"
+  />
+</div>
+
               </div>
 
                       {/* Categories */}
                       <div className="mb-4">
-                        <div className="mb-6 border-b flex flex-wrap">
-                          {selectedCategories.map((category, index) => (
-                            <FadeCategory
-                              key={category}
-                              category={category}
-                              onRemove={removeCategory}
-                            />
-                          ))}
-                        </div>
-              
-                        <div className="flex flex-wrap">
+                        <div className="mb-3 flex">Please select Category <div className={` ml-5 justify-center items-center text-sm text-red-600 ${selectedCategories.length>3?'flex':'hidden'}`}>(Please select up to 3 categories)</div> </div>
+                                                <div className="flex flex-wrap">
                           {mainCategories.map((category, index) => (
                             <div
                               key={index}
-                              className="m-1 p-2 rounded-2xl bg-gray-300 w-fit cursor-pointer"
+                              className={`m-1 p-2 rounded-2xl  w-fit cursor-pointer ${selectedCategories.includes(category)?'bg-blue-500':'bg-gray-300'}`}
                               onClick={() => handleCategory(category)}
                             >
                               {category}
@@ -469,7 +475,7 @@ export default function ProductUploadPage() {
                       </div>
 
               {/* Features (dynamic list) */}
-              <div>
+            {/*   <div>
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-gray-700">Features</label>
                   <button type="button" onClick={() => arrayAdd(setFeatures, features, "")} className="text-sm text-yellow-600">
@@ -492,11 +498,11 @@ export default function ProductUploadPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               {/* variations, delivery structured like features */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:flex">
-                <div>
+               {/*  <div>
                   <label className="text-sm font-medium text-gray-700">Variations</label>
                   <div className="mt-2 space-y-2">
                     {variations.map((v, i) => (
@@ -507,7 +513,7 @@ export default function ProductUploadPage() {
                     ))}
                     <button type="button" onClick={() => arrayAdd(setVariations, variations, "")} className="text-yellow-600 text-sm mt-2">+ Add</button>
                   </div>
-                </div>
+                </div> */}
 
 
                 <div>
@@ -521,6 +527,18 @@ export default function ProductUploadPage() {
                     ))}
                     <button type="button" onClick={() => arrayAdd(setDelivery, delivery, "")} className="text-yellow-600 text-sm mt-2">+ Add</button>
                   </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Pick Up Location</label>
+                  <div className="p-6 max-w-lg mx-auto">
+      <h1 className="text-xl font-bold mb-3">Find a Location</h1>
+      <LocationInput onSelect={(loc) => setLocation(loc)} />
+      {location && (
+        <p className="mt-4 text-gray-700">
+          Selected location: <span className="font-semibold">{location}</span>
+        </p>
+      )}
+    </div>
                 </div>
               </div>
 
@@ -539,57 +557,23 @@ export default function ProductUploadPage() {
                   <label className="text-sm text-gray-700">Date first available</label>
                   <input type="date" value={dateFirstAvailable} onChange={(e) => setDateFirstAvailable(e.target.value)} className="w-full border rounded-md px-3 py-2" />
                 </div>
-                <div>
+               {/*  <div>
                   <label className="text-sm text-gray-700">Unavailable Dates</label>
                   <input type="date" value={createdAt} onChange={(e) => setCreatedAt(e.target.value)} className="w-full border rounded-md px-3 py-2" />
                   at a later time we make a selection for dates unavailable like all weekends or weekdays or summer or winter etc
-                </div>
+                </div> */}
               </div>
 
-              {/* toggles */}
-              <div className="flex items-center gap-6">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={amazonChoice} onChange={(e) => setAmazonChoice(e.target.checked)} />
-                  <span className="text-sm">Amazon Choice</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={isPlusContent} onChange={(e) => setIsPlusContent(e.target.checked)} />
-                  <span className="text-sm">Plus content</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={videoEnabled} onChange={(e) => setVideoEnabled(e.target.checked)} />
-                  <span className="text-sm">Video</span>
-                </label>
-              </div>
 
-              {/* seller info */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>
-                  <label className="text-sm text-gray-700">Seller name</label>
-                  <input value={sellerName} onChange={(e) => setSellerName(e.target.value)} className="w-full border rounded-md px-3 py-2" />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-700">Seller id</label>
-                  <input value={sellerId} onChange={(e) => setSellerId(e.target.value)} className="w-full border rounded-md px-3 py-2" />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-700">Number of sellers</label>
-                  <input type="number" value={numberOfSellers} onChange={(e) => setNumberOfSellers(e.target.value)} className="w-full border rounded-md px-3 py-2" />
-                </div>
-              </div>
-
-              {/* Technical & extra raw fields */}
-              <div>
-                <label className="text-sm text-gray-700">Extra fields (JSON)</label>
-                <textarea placeholder='Add any extra JSON properties' className="w-full border rounded-md px-3 py-2 h-24" />
-              </div>
 
               {/* submit */}
               <div className="pt-4 border-t flex items-center justify-between">
-                <div className="text-sm text-gray-500">When you click Publish we will POST to /api/products</div>
-                <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-md font-semibold shadow">
+                <div className="text-sm text-gray-500 hidden">When you click Publish we will POST to /api/products</div>
+                <div className="w-full flex justify-end">
+                  <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-md font-semibold shadow items-end">
                   Publish product
                 </button>
+                </div>
               </div>
             </div>
           </div>
@@ -620,9 +604,7 @@ export default function ProductUploadPage() {
               <div>
                 <h2 className="text-xl font-semibold">{title}</h2>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-2xl font-bold text-yellow-600">${finalPrice}</span>
-                  <span className="text-sm line-through text-gray-400">${initialPrice}</span>
-                  <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">{discount}% off</span>
+                  <span className="text-2xl font-bold text-yellow-600">€{finalPrice}</span>
                 </div>
                 <p className="mt-3 text-gray-600 text-sm whitespace-pre-line">{description.slice(0, 220)}{description.length > 220 ? "..." : ""}</p>
               </div>
@@ -630,25 +612,9 @@ export default function ProductUploadPage() {
               {/* quick meta */}
               <div className="flex items-center gap-4 pt-4 border-t">
                 <div>
-                  <div className="text-xs text-gray-500">Brand</div>
-                  <div className="text-sm font-medium">{brand}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500">ASIN</div>
-                  <div className="text-sm font-medium">{asin}</div>
-                </div>
-                <div>
                   <div className="text-xs text-gray-500">Availability</div>
                   <div className="text-sm font-medium">{isAvailable ? "In stock" : "Out of stock"}</div>
                 </div>
-              </div>
-
-              {/* features preview */}
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700">Features</h3>
-                <ul className="mt-2 grid grid-cols-1 gap-1 text-sm text-gray-600">
-                  {features.length === 0 ? <li className="text-gray-400">No features added</li> : features.map((f, i) => <li key={i}>• {f}</li>)}
-                </ul>
               </div>
 
               {/* meta list */}
@@ -665,18 +631,13 @@ export default function ProductUploadPage() {
                   <div className="text-xs text-gray-500">Manufacturer</div>
                   <div className="font-medium">{manufacturer}</div>
                 </div>
-                <div>
-                  <div className="text-xs text-gray-500">SKU / UPC</div>
-                  <div className="font-medium">{upc}</div>
-                </div>
               </div>
 
               {/* small actions */}
-              <div className="flex items-center gap-3 pt-4 border-t">
+             {/*  <div className="flex items-center gap-3 pt-4 border-t">
                 <button type="button" className="text-sm text-yellow-600 hover:underline">Preview on site</button>
-                <button type="button" className="text-sm text-gray-500">Duplicate</button>
                 <button type="button" className="text-sm text-gray-500">Save draft</button>
-              </div>
+              </div> */}
             </div>
           </aside>
         </form>

@@ -195,7 +195,7 @@ const ProductPageSearch = ({ product, city, dates, onDatesChange }) => {
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-    if (searchProduct) params.set("product", searchProduct);
+    if (searchProduct) params.set("tag", searchProduct);
     if (location) params.set("location", location);
     if (dates.startDate) params.set("startDate", dates.startDate.toISOString());
     if (dates.endDate) params.set("endDate", dates.endDate.toISOString());
@@ -208,7 +208,7 @@ const ProductPageSearch = ({ product, city, dates, onDatesChange }) => {
       <div className="w-full flex my-3">
         <div className=" rounded-full mx-auto py-2 pr-2 pl-6 flex items-center h-16 border border-slate-300 shadow">
           <div className="flex-grow px-2">
-            <label className="block text-xs font-bold">Product</label>
+            <label className="block text-xs font-bold">Cerca</label>
             <input
               type="text"
               placeholder="Product or category"
@@ -219,7 +219,7 @@ const ProductPageSearch = ({ product, city, dates, onDatesChange }) => {
           </div>
           <div className="h-8 border-r border-slate-300"></div>
           <div className="flex-grow px-4 cursor-pointer" onClick={() => setCalendarOpen(true)}>
-            <label className="block text-xs font-bold">Dates</label>
+            <label className="block text-xs font-bold">Data</label>
             <input
               type="text"
               readOnly

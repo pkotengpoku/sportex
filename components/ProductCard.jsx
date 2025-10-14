@@ -19,9 +19,8 @@ function ProductCard({product}) {
                   <div className="w-full truncate">
                     {product.title}
                   </div>
-                  <div className=''><span className="">{product.dailyPrice}</span> per <span>day</span></div>
-                  <div><span className='text-green-500'> Available</span></div>
-                  <div>Location:  <span>{product.location}</span></div>
+                  <div className=''><span className="text-xl font-bold">€{(product.final_price ?? 0)} </span> al <span>giorno</span></div>
+                  <div>Location:  <span>{product.location || "Milano"}</span></div>
                   </div>
                   </div>
     )

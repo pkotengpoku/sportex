@@ -11,10 +11,15 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { loadStripe } from '@stripe/stripe-js';
 
 export default function ProductPage() {
   const params = useParams();
   const productId = params.id;
+
+  const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
   const { cart, addToCart } = useCart();
 
@@ -52,6 +57,67 @@ export default function ProductPage() {
       1
     );
   };
+const handleCheckout = async () => {
+    // 1. Validation: Ensure a product type is selected if options exist
+    if (size === null && product.product_types?.length > 0) {
+        console.log("❌ Please select a product type before proceeding to checkout");
+        alert("Please select a product type before proceeding to checkout");
+        return;
+    }
+
+    // 2. Prepare item and quantity (days)
+    const selectedPrice = product.product_types?.[size]?.price || product.final_price;
+    const selectedSize = product.product_types?.[size]?.name || 'Standard';
+
+    // Calculate days: difference between end and start date
+    const diffTime = state[0].endDate.getTime() - state[0].startDate.getTime();
+    // Use Math.round for a full-day calculation, or adjust based on your rental rules
+    const days = Math.round(diffTime / (1000 * 60 * 60 * 24)) || 1; 
+    const quantity = days; 
+
+    if (!selectedPrice) {
+        console.error("Price not found.");
+        return;
+    }
+    
+    // 3. Call the Route Handler to create the Stripe session
+    try {
+        const response = await fetch('/api/create-stripe-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: product.title,
+                price: selectedPrice, // Per-day price
+                size: selectedSize,
+                quantity: quantity, // Number of days
+                productId: product._id,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+            console.error(data.error || "Failed to create Stripe checkout session.");
+            alert("Payment initiation failed. See console for details.");
+            return;
+        }
+
+        // 4. Extract the session object (including the 'url')
+        const { session } = data; 
+        
+        // 5. CHECK: Ensure the session object has the URL
+        if (!session || !session.url) {
+            throw new Error("Stripe session URL is missing in the response from the server.");
+        }
+
+        // 6. NEW REDIRECT METHOD: Redirect the user to the Stripe Checkout URL
+        // This is the correct, supported method to navigate to Stripe Checkout.
+        window.location.href = session.url;
+
+    } catch (error) {
+        console.error("Checkout process failed:", error);
+    }
+};
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -154,14 +220,19 @@ export default function ProductPage() {
           </div>
 
           {/* Pricing */}
-          <div className="mt-4">
-            <div className="text-xl font-semibold">
-              {size !== null ? product.product_types[size].price : product.final_price} € / al giorno
-            </div>
-            <div>
-              Total for 5 days: {size !== null ? product.product_types[size].price * 5 : product.final_price * 5} {product.currency}
-            </div>
-          </div>
+<div className="mt-4">
+  <div className="text-xl font-semibold">
+    {size !== null
+      ? (product.product_types[size]?.price ?? 0).toFixed(2).replace('.', ',')
+      : (product.final_price ?? 0).toFixed(2).replace('.', ',')} € / al giorno
+  </div>
+  <div>
+    Total for 5 days: {size !== null
+      ? ((product.product_types[size]?.price ?? 0) * 5).toFixed(2).replace('.', ',')
+      : ((product.final_price ?? 0) * 5).toFixed(2).replace('.', ',')} {product.currency ?? '€'}
+  </div>
+</div>
+
 
           {/* Rental Info */}
           <div className="flex flex-col gap-2 mt-4">
@@ -180,13 +251,13 @@ export default function ProductPage() {
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={handleCartChange}
-            className="mt-4 w-full sm:w-48 bg-amber-400 hover:bg-amber-500 active:scale-95 transition p-3 rounded-lg font-bold text-white"
-          >
-            Rent Item
-          </button>
+         <button
+            type="button"
+            onClick={handleCheckout} 
+            className="mt-4 w-full sm:w-48 bg-amber-400 hover:bg-amber-500 active:scale-95 transition p-3 rounded-lg font-bold text-white"
+          >
+            Rent Item
+          </button>
         </div>
       </div>
     </div>
