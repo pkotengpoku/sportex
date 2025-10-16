@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { CartProvider } from "@/context/CartContext";
-import AuthProvider from "@/components/AuthProvider";
+import ClientWrapper from "@/components/ClientWrapper"; // ✅ Import the wrapper
 import "mapbox-gl/dist/mapbox-gl.css";
 
 const geistSans = Geist({
@@ -22,14 +21,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-        <CartProvider>
-        <AuthProvider>
-        {children}
-        </AuthProvider>
-        </CartProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

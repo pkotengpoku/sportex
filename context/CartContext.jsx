@@ -6,22 +6,20 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  // ✅ Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
+    if (savedCart) setCart(JSON.parse(savedCart));
   }, []);
 
-  // ✅ Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (product, quantity = 1) => {
     setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id && item.size === product.size);
+      const existing = prev.find(
+        (item) => item.id === product.id && item.size === product.size
+      );
       if (existing) {
         return prev.map((item) =>
           item.id === product.id && item.size === product.size
